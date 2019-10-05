@@ -10,5 +10,5 @@
 	<haxelib name="layout" />
 	<haxelib name="trilateral" />
 	<library path="Assets/swf-library.swf" preload="true" />
-	
+	<assets path="Assets" rename="assets" include="*.mp4" if="flash || html5" embed="false" />
 </project>

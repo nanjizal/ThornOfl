@@ -893,9 +893,9 @@ ApplicationMain.create = function(config) {
 	ManifestResources.init(config);
 	var _this = app.meta;
 	if(__map_reserved["build"] != null) {
-		_this.setReserved("build","2");
+		_this.setReserved("build","6");
 	} else {
-		_this.h["build"] = "2";
+		_this.h["build"] = "6";
 	}
 	var _this1 = app.meta;
 	if(__map_reserved["company"] != null) {
@@ -4197,22 +4197,78 @@ var Main = function() {
 	this.speed = 2.;
 	this.forward = true;
 	this.turnRoundX = 700.;
+	this.starsSound = "AMBIENT -  MP3 TEST 1.mp3";
+	this.s15 = "TAPLow05.wav";
+	this.s14 = "TAPLow04.wav";
+	this.s13 = "TAPLow03.wav";
+	this.s12 = "TAPLow02.wav";
+	this.s11 = "TAPLow01.wav";
+	this.s10 = "TAP03.wav";
+	this.s9 = "TAP02.wav";
+	this.s8 = "TAP01.wav";
+	this.s7 = "TAP_low01.ogg";
+	this.s6 = "TAP_low01.mp3";
+	this.s5 = "TAP_low_02.ogg";
+	this.s4 = "TAP_low_02.mp3";
+	this.s3 = "TAP_High_02.ogg";
+	this.s2 = "TAP_High_02.mp3";
+	this.s1 = "TAP_High_01.ogg";
+	this.s0 = "TAP_High_01.mp3";
 	openfl_display_Sprite.call(this);
 	this.clip = openfl_utils_Assets.getMovieClip("swf-library:dragon");
 	this.clip.set_x(100.);
 	this.clip.set_y(100.);
 	this.addChild(this.clip);
 	this.addEventListener("enterFrame",$bind(this,this.this_onEnterFrame));
+	this.drawButton(50,50,65280);
 };
 $hxClasses["Main"] = Main;
 Main.__name__ = "Main";
 Main.__super__ = openfl_display_Sprite;
 Main.prototype = $extend(openfl_display_Sprite.prototype,{
 	clip: null
+	,s0: null
+	,s1: null
+	,s2: null
+	,s3: null
+	,s4: null
+	,s5: null
+	,s6: null
+	,s7: null
+	,s8: null
+	,s9: null
+	,s10: null
+	,s11: null
+	,s12: null
+	,s13: null
+	,s14: null
+	,s15: null
+	,starsSound: null
+	,soundController: null
 	,layout: null
 	,turnRoundX: null
 	,forward: null
 	,speed: null
+	,drawButton: function(x,y,c) {
+		var but = new openfl_display_Sprite();
+		var g = but.get_graphics();
+		g.beginFill(c,1);
+		g.lineStyle(0,c,1);
+		g.drawRect(0,0,70,50);
+		g.endFill();
+		this.addChild(but);
+		but.set_x(x);
+		but.set_y(y);
+		but.addEventListener("mouseDown",$bind(this,this.mouseDown));
+	}
+	,mouseDown: function(event) {
+		haxe_Log.trace("play music",{ fileName : "Source/Main.hx", lineNumber : 62, className : "Main", methodName : "mouseDown"});
+		this.playMusic();
+	}
+	,playMusic: function() {
+		this.soundController = new sound_SoundController();
+		this.soundController.playTiny();
+	}
 	,this_onEnterFrame: function(event) {
 		var currentTime = openfl_Lib.getTimer();
 		if(this.forward) {
@@ -25738,7 +25794,7 @@ var lime_utils_AssetCache = function() {
 	this.audio = new haxe_ds_StringMap();
 	this.font = new haxe_ds_StringMap();
 	this.image = new haxe_ds_StringMap();
-	this.version = 246674;
+	this.version = 854525;
 };
 $hxClasses["lime.utils.AssetCache"] = lime_utils_AssetCache;
 lime_utils_AssetCache.__name__ = "lime.utils.AssetCache";
@@ -42963,6 +43019,39 @@ openfl__$internal_renderer_canvas_CanvasTextField.render = function(textField,re
 		}
 	}
 };
+var openfl__$internal_renderer_canvas_CanvasVideo = function() { };
+$hxClasses["openfl._internal.renderer.canvas.CanvasVideo"] = openfl__$internal_renderer_canvas_CanvasVideo;
+openfl__$internal_renderer_canvas_CanvasVideo.__name__ = "openfl._internal.renderer.canvas.CanvasVideo";
+openfl__$internal_renderer_canvas_CanvasVideo.render = function(video,renderer) {
+	if(!video.__renderable || video.__stream == null) {
+		return;
+	}
+	var alpha = renderer.__getAlpha(video.__worldAlpha);
+	if(alpha <= 0) {
+		return;
+	}
+	var context = renderer.context;
+	if(video.__stream.__video != null) {
+		renderer.__setBlendMode(video.__worldBlendMode);
+		renderer.__pushMaskObject(video);
+		context.globalAlpha = alpha;
+		var scrollRect = video.__scrollRect;
+		var smoothing = video.smoothing;
+		renderer.setTransform(video.__worldTransform,context);
+		if(!smoothing) {
+			context.imageSmoothingEnabled = false;
+		}
+		if(scrollRect == null) {
+			context.drawImage(video.__stream.__video,0,0,video.get_width(),video.get_height());
+		} else {
+			context.drawImage(video.__stream.__video,scrollRect.x,scrollRect.y,scrollRect.width,scrollRect.height,scrollRect.x,scrollRect.y,scrollRect.width,scrollRect.height);
+		}
+		if(!smoothing) {
+			context.imageSmoothingEnabled = true;
+		}
+		renderer.__popMaskObject(video);
+	}
+};
 var openfl__$internal_renderer_context3D_Context3DBitmap = function() { };
 $hxClasses["openfl._internal.renderer.context3D.Context3DBitmap"] = openfl__$internal_renderer_context3D_Context3DBitmap;
 openfl__$internal_renderer_context3D_Context3DBitmap.__name__ = "openfl._internal.renderer.context3D.Context3DBitmap";
@@ -49258,6 +49347,81 @@ openfl__$internal_renderer_context3D_Context3DTextField.renderMask = function(te
 	}
 	textField.__graphics.__hardwareDirty = false;
 };
+var openfl__$internal_renderer_context3D_Context3DVideo = function() { };
+$hxClasses["openfl._internal.renderer.context3D.Context3DVideo"] = openfl__$internal_renderer_context3D_Context3DVideo;
+openfl__$internal_renderer_context3D_Context3DVideo.__name__ = "openfl._internal.renderer.context3D.Context3DVideo";
+openfl__$internal_renderer_context3D_Context3DVideo.render = function(video,renderer) {
+	if(!video.__renderable || video.__worldAlpha <= 0 || video.__stream == null) {
+		return;
+	}
+	if(video.__stream.__video != null) {
+		var context = renderer.__context3D;
+		var gl = context.gl;
+		var texture = video.__getTexture(context);
+		if(texture == null) {
+			return;
+		}
+		renderer.__setBlendMode(video.__worldBlendMode);
+		renderer.__pushMaskObject(video);
+		var shader = renderer.__initDisplayShader(video.__worldShader);
+		renderer.setShader(shader);
+		renderer.applyBitmapData(null,true,false);
+		renderer.applyMatrix(renderer.__getMatrix(video.__renderTransform,1));
+		renderer.applyAlpha(video.__worldAlpha);
+		renderer.applyColorTransform(video.__worldColorTransform);
+		if(shader.__textureSize != null) {
+			openfl__$internal_renderer_context3D_Context3DVideo.__textureSizeValue[0] = video.__stream != null ? video.__stream.__video.videoWidth : 0;
+			openfl__$internal_renderer_context3D_Context3DVideo.__textureSizeValue[1] = video.__stream != null ? video.__stream.__video.videoHeight : 0;
+			shader.__textureSize.value = openfl__$internal_renderer_context3D_Context3DVideo.__textureSizeValue;
+		}
+		renderer.updateShader();
+		context.setTextureAt(0,video.__getTexture(context));
+		context.__flushGLTextures();
+		gl.uniform1i(shader.__texture.index,0);
+		if(video.smoothing) {
+			gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+			gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+		} else {
+			gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
+			gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);
+		}
+		var vertexBuffer = video.__getVertexBuffer(context);
+		if(shader.__position != null) {
+			context.setVertexBufferAt(shader.__position.index,vertexBuffer,0,3);
+		}
+		if(shader.__textureCoord != null) {
+			context.setVertexBufferAt(shader.__textureCoord.index,vertexBuffer,3,2);
+		}
+		var indexBuffer = video.__getIndexBuffer(context);
+		context.drawTriangles(indexBuffer);
+		renderer.__clearShader();
+		renderer.__popMaskObject(video);
+	}
+};
+openfl__$internal_renderer_context3D_Context3DVideo.renderMask = function(video,renderer) {
+	if(video.__stream == null) {
+		return;
+	}
+	if(video.__stream.__video != null) {
+		var context = renderer.__context3D;
+		var gl = context.gl;
+		var shader = renderer.__maskShader;
+		renderer.setShader(shader);
+		renderer.applyBitmapData(openfl__$internal_renderer_context3D_Context3DMaskShader.opaqueBitmapData,true);
+		renderer.applyMatrix(renderer.__getMatrix(video.__renderTransform,1));
+		renderer.updateShader();
+		var vertexBuffer = video.__getVertexBuffer(context);
+		if(shader.__position != null) {
+			context.setVertexBufferAt(shader.__position.index,vertexBuffer,0,3);
+		}
+		if(shader.__textureCoord != null) {
+			context.setVertexBufferAt(shader.__textureCoord.index,vertexBuffer,3,2);
+		}
+		var indexBuffer = video.__getIndexBuffer(context);
+		context.drawTriangles(indexBuffer);
+		renderer.__clearShader();
+	}
+};
 var openfl__$internal_renderer_dom_DOMBitmap = function() { };
 $hxClasses["openfl._internal.renderer.dom.DOMBitmap"] = openfl__$internal_renderer_dom_DOMBitmap;
 openfl__$internal_renderer_dom_DOMBitmap.__name__ = "openfl._internal.renderer.dom.DOMBitmap";
@@ -49601,6 +49765,33 @@ openfl__$internal_renderer_dom_DOMTextField.__getAttributeMatch = function(regex
 		return regex.matched(2);
 	} else {
 		return regex.matched(3);
+	}
+};
+var openfl__$internal_renderer_dom_DOMVideo = function() { };
+$hxClasses["openfl._internal.renderer.dom.DOMVideo"] = openfl__$internal_renderer_dom_DOMVideo;
+openfl__$internal_renderer_dom_DOMVideo.__name__ = "openfl._internal.renderer.dom.DOMVideo";
+openfl__$internal_renderer_dom_DOMVideo.clear = function(video,renderer) {
+	if(video.__active) {
+		renderer.element.removeChild(video.__stream.__video);
+		video.__active = false;
+	}
+};
+openfl__$internal_renderer_dom_DOMVideo.render = function(video,renderer) {
+	if(video.stage != null && video.__stream != null && video.__worldVisible && video.__renderable) {
+		if(!video.__active) {
+			renderer.__initializeElement(video,video.__stream.__video);
+			video.__active = true;
+			video.__dirty = true;
+		}
+		if(video.__dirty) {
+			video.__stream.__video.width = video.__width | 0;
+			video.__stream.__video.height = video.__height | 0;
+			video.__dirty = false;
+		}
+		renderer.__updateClip(video);
+		renderer.__applyStyle(video,true,true,true);
+	} else {
+		openfl__$internal_renderer_dom_DOMVideo.clear(video,renderer);
 	}
 };
 var openfl__$internal_symbols_SWFSymbol = function() {
@@ -64217,6 +64408,37 @@ openfl_events_ErrorEvent.prototype = $extend(openfl_events_TextEvent.prototype,{
 	}
 	,__class__: openfl_events_ErrorEvent
 });
+var openfl_events_AsyncErrorEvent = function(type,bubbles,cancelable,text,error) {
+	if(text == null) {
+		text = "";
+	}
+	if(cancelable == null) {
+		cancelable = false;
+	}
+	if(bubbles == null) {
+		bubbles = false;
+	}
+	openfl_events_ErrorEvent.call(this,type,bubbles,cancelable);
+	this.text = text;
+	this.error = error;
+};
+$hxClasses["openfl.events.AsyncErrorEvent"] = openfl_events_AsyncErrorEvent;
+openfl_events_AsyncErrorEvent.__name__ = "openfl.events.AsyncErrorEvent";
+openfl_events_AsyncErrorEvent.__super__ = openfl_events_ErrorEvent;
+openfl_events_AsyncErrorEvent.prototype = $extend(openfl_events_ErrorEvent.prototype,{
+	error: null
+	,clone: function() {
+		var event = new openfl_events_AsyncErrorEvent(this.type,this.bubbles,this.cancelable,this.text,this.error);
+		event.target = this.target;
+		event.currentTarget = this.currentTarget;
+		event.eventPhase = this.eventPhase;
+		return event;
+	}
+	,toString: function() {
+		return this.__formatToString("AsyncErrorEvent",["type","bubbles","cancelable","text","error"]);
+	}
+	,__class__: openfl_events_AsyncErrorEvent
+});
 var openfl_events__$EventDispatcher_DispatchIterator = function(list) {
 	this.active = false;
 	this.reset(list);
@@ -67423,6 +67645,205 @@ openfl_media_SoundMixer.set_soundTransform = function(value) {
 	}
 	return value;
 };
+var openfl_media_Video = function(width,height) {
+	if(height == null) {
+		height = 240;
+	}
+	if(width == null) {
+		width = 320;
+	}
+	openfl_display_DisplayObject.call(this);
+	this.__width = width;
+	this.__height = height;
+	this.__textureTime = -1;
+	this.smoothing = false;
+	this.deblocking = 0;
+};
+$hxClasses["openfl.media.Video"] = openfl_media_Video;
+openfl_media_Video.__name__ = "openfl.media.Video";
+openfl_media_Video.__super__ = openfl_display_DisplayObject;
+openfl_media_Video.prototype = $extend(openfl_display_DisplayObject.prototype,{
+	deblocking: null
+	,smoothing: null
+	,__active: null
+	,__buffer: null
+	,__bufferAlpha: null
+	,__bufferColorTransform: null
+	,__bufferContext: null
+	,__bufferData: null
+	,__dirty: null
+	,__height: null
+	,__indexBuffer: null
+	,__indexBufferContext: null
+	,__indexBufferData: null
+	,__stream: null
+	,__texture: null
+	,__textureTime: null
+	,__uvRect: null
+	,__vertexBuffer: null
+	,__vertexBufferContext: null
+	,__vertexBufferData: null
+	,__width: null
+	,attachNetStream: function(netStream) {
+		this.__stream = netStream;
+		if(this.__stream != null && this.__stream.__video != null && !this.__stream.__closed) {
+			this.__stream.__video.play();
+		}
+	}
+	,clear: function() {
+	}
+	,__enterFrame: function(deltaTime) {
+		if(this.__renderable && this.__stream != null) {
+			if(!this.__renderDirty) {
+				this.__renderDirty = true;
+				this.__setParentRenderDirty();
+			}
+		}
+	}
+	,__getBounds: function(rect,matrix) {
+		var bounds = openfl_geom_Rectangle.__pool.get();
+		bounds.setTo(0,0,this.__width,this.__height);
+		bounds.__transform(bounds,matrix);
+		rect.__expand(bounds.x,bounds.y,bounds.width,bounds.height);
+		openfl_geom_Rectangle.__pool.release(bounds);
+	}
+	,__getIndexBuffer: function(context) {
+		var gl = context.gl;
+		if(this.__indexBuffer == null || this.__indexBufferContext != context.__context) {
+			var this1 = new Uint16Array(6);
+			this.__indexBufferData = this1;
+			this.__indexBufferData[0] = 0;
+			this.__indexBufferData[1] = 1;
+			this.__indexBufferData[2] = 2;
+			this.__indexBufferData[3] = 2;
+			this.__indexBufferData[4] = 1;
+			this.__indexBufferData[5] = 3;
+			this.__indexBufferContext = context.__context;
+			this.__indexBuffer = context.createIndexBuffer(6);
+			this.__indexBuffer.uploadFromTypedArray(this.__indexBufferData);
+		}
+		return this.__indexBuffer;
+	}
+	,__getTexture: function(context) {
+		if(this.__stream == null || this.__stream.__video == null) {
+			return null;
+		}
+		var gl = context.__context.webgl;
+		var internalFormat = gl.RGBA;
+		var format = gl.RGBA;
+		if(!this.__stream.__closed && this.__stream.__video.currentTime != this.__textureTime) {
+			if(this.__texture == null) {
+				this.__texture = context.createRectangleTexture(this.__stream.__video.videoWidth,this.__stream.__video.videoHeight,1,false);
+			}
+			context.__bindGLTexture2D(this.__texture.__textureID);
+			lime_graphics__$WebGLRenderContext_WebGLRenderContext_$Impl_$.texImage2D(gl,gl.TEXTURE_2D,0,internalFormat,format,gl.UNSIGNED_BYTE,this.__stream.__video);
+			this.__textureTime = this.__stream.__video.currentTime;
+		}
+		return this.__texture;
+	}
+	,__getVertexBuffer: function(context) {
+		var gl = context.gl;
+		if(this.__vertexBuffer == null || this.__vertexBufferContext != context.__context) {
+			var uvWidth = 1;
+			var uvHeight = 1;
+			var this1 = new Float32Array(20);
+			this.__vertexBufferData = this1;
+			this.__vertexBufferData[0] = this.get_width();
+			this.__vertexBufferData[1] = this.get_height();
+			this.__vertexBufferData[3] = uvWidth;
+			this.__vertexBufferData[4] = uvHeight;
+			this.__vertexBufferData[6] = this.get_height();
+			this.__vertexBufferData[9] = uvHeight;
+			this.__vertexBufferData[10] = this.get_width();
+			this.__vertexBufferData[13] = uvWidth;
+			this.__vertexBufferContext = context.__context;
+			this.__vertexBuffer = context.createVertexBuffer(3,5);
+			this.__vertexBuffer.uploadFromTypedArray(this.__vertexBufferData);
+		}
+		return this.__vertexBuffer;
+	}
+	,__hitTest: function(x,y,shapeFlag,stack,interactiveOnly,hitObject) {
+		if(!hitObject.get_visible() || this.__isMask) {
+			return false;
+		}
+		if(this.get_mask() != null && !this.get_mask().__hitTestMask(x,y)) {
+			return false;
+		}
+		this.__getRenderTransform();
+		var _this = this.__renderTransform;
+		var norm = _this.a * _this.d - _this.b * _this.c;
+		var px = norm == 0 ? -_this.tx : 1.0 / norm * (_this.c * (_this.ty - y) + _this.d * (x - _this.tx));
+		var _this1 = this.__renderTransform;
+		var norm1 = _this1.a * _this1.d - _this1.b * _this1.c;
+		var py = norm1 == 0 ? -_this1.ty : 1.0 / norm1 * (_this1.a * (y - _this1.ty) + _this1.b * (_this1.tx - x));
+		if(px > 0 && py > 0 && px <= this.__width && py <= this.__height) {
+			if(stack != null && !interactiveOnly) {
+				stack.push(hitObject);
+			}
+			return true;
+		}
+		return false;
+	}
+	,__hitTestMask: function(x,y) {
+		var point = openfl_geom_Point.__pool.get();
+		point.setTo(x,y);
+		this.__globalToLocal(point,point);
+		var hit = point.x > 0 && point.y > 0 && point.x <= this.__width && point.y <= this.__height;
+		openfl_geom_Point.__pool.release(point);
+		return hit;
+	}
+	,__renderCanvas: function(renderer) {
+		openfl__$internal_renderer_canvas_CanvasVideo.render(this,renderer);
+		this.__renderEvent(renderer);
+	}
+	,__renderDOM: function(renderer) {
+		openfl__$internal_renderer_dom_DOMVideo.render(this,renderer);
+		this.__renderEvent(renderer);
+	}
+	,__renderGL: function(renderer) {
+		openfl__$internal_renderer_context3D_Context3DVideo.render(this,renderer);
+		this.__renderEvent(renderer);
+	}
+	,__renderGLMask: function(renderer) {
+		openfl__$internal_renderer_context3D_Context3DVideo.renderMask(this,renderer);
+	}
+	,get_height: function() {
+		return this.__height * this.get_scaleY();
+	}
+	,set_height: function(value) {
+		if(this.get_scaleY() != 1 || value != this.__height) {
+			this.__setTransformDirty();
+			this.__dirty = true;
+		}
+		this.set_scaleY(1);
+		return this.__height = value;
+	}
+	,get_videoHeight: function() {
+		if(this.__stream != null && this.__stream.__video != null) {
+			return this.__stream.__video.videoHeight | 0;
+		}
+		return 0;
+	}
+	,get_videoWidth: function() {
+		if(this.__stream != null && this.__stream.__video != null) {
+			return this.__stream.__video.videoWidth | 0;
+		}
+		return 0;
+	}
+	,get_width: function() {
+		return this.__width * this.__scaleX;
+	}
+	,set_width: function(value) {
+		if(this.__scaleX != 1 || this.__width != value) {
+			this.__setTransformDirty();
+			this.__dirty = true;
+		}
+		this.set_scaleX(1);
+		return this.__width = value;
+	}
+	,__class__: openfl_media_Video
+	,__properties__: $extend(openfl_display_DisplayObject.prototype.__properties__,{get_videoWidth:"get_videoWidth",get_videoHeight:"get_videoHeight"})
+});
 var openfl_net_NetConnection = function() {
 	openfl_events_EventDispatcher.call(this);
 };
@@ -74049,6 +74470,293 @@ haxe_lang_Iterable.prototype = {
 	iterator: null
 	,__class__: haxe_lang_Iterable
 };
+var sound_SoundController = function() {
+	this.starsSound = "AMBIENT -  MP3 TEST 1.mp3";
+	this.s15 = "TAPLow05.wav";
+	this.s14 = "TAPLow04.wav";
+	this.s13 = "TAPLow03.wav";
+	this.s12 = "TAPLow02.wav";
+	this.s11 = "TAPLow01.wav";
+	this.s10 = "TAP03.wav";
+	this.s9 = "TAP02.wav";
+	this.s8 = "TAP01.wav";
+	this.s7 = "TAP_low01.ogg";
+	this.s6 = "TAP_low01.mp3";
+	this.s5 = "TAP_low_02.ogg";
+	this.s4 = "TAP_low_02.mp3";
+	this.s3 = "TAP_High_02.ogg";
+	this.s2 = "TAP_High_02.mp3";
+	this.s1 = "TAP_High_01.ogg";
+	this.s0 = "TAP_High_01.mp3";
+	this.tinySound = new video_SimpleVideoPlayer();
+	this.gliderSound = new video_SimpleVideoPlayer();
+	this.dragonSound = new video_SimpleVideoPlayer();
+	this.ambientSound = new video_SimpleVideoPlayer();
+};
+$hxClasses["sound.SoundController"] = sound_SoundController;
+sound_SoundController.__name__ = "sound.SoundController";
+sound_SoundController.prototype = {
+	s0: null
+	,s1: null
+	,s2: null
+	,s3: null
+	,s4: null
+	,s5: null
+	,s6: null
+	,s7: null
+	,s8: null
+	,s9: null
+	,s10: null
+	,s11: null
+	,s12: null
+	,s13: null
+	,s14: null
+	,s15: null
+	,starsSound: null
+	,tinySound: null
+	,gliderSound: null
+	,dragonSound: null
+	,ambientSound: null
+	,playTiny: function() {
+		this.tinySound.set_source(this.s3);
+		this.tinySound.play();
+	}
+	,__class__: sound_SoundController
+};
+var video_IVideoPlayer = function() { };
+$hxClasses["video.IVideoPlayer"] = video_IVideoPlayer;
+video_IVideoPlayer.__name__ = "video.IVideoPlayer";
+video_IVideoPlayer.prototype = {
+	get_time: null
+	,get_paused: null
+	,get_playing: null
+	,get_container: null
+	,set_height: null
+	,get_height: null
+	,set_width: null
+	,get_width: null
+	,set_soundTransform: null
+	,get_soundTransform: null
+	,set_mute: null
+	,get_mute: null
+	,set_pan: null
+	,get_pan: null
+	,set_volume: null
+	,get_volume: null
+	,set_loop: null
+	,get_loop: null
+	,set_source: null
+	,get_source: null
+	,play: null
+	,pause: null
+	,seek: null
+	,stop: null
+	,dispose: null
+	,__class__: video_IVideoPlayer
+	,__properties__: {get_time:"get_time",get_paused:"get_paused",get_playing:"get_playing",get_container:"get_container",set_height:"set_height",get_height:"get_height",set_width:"set_width",get_width:"get_width",set_soundTransform:"set_soundTransform",get_soundTransform:"get_soundTransform",set_mute:"set_mute",get_mute:"get_mute",set_pan:"set_pan",get_pan:"get_pan",set_volume:"set_volume",get_volume:"get_volume",set_loop:"set_loop",get_loop:"get_loop",set_source:"set_source",get_source:"get_source"}
+};
+var video_SimpleVideoPlayer = function() {
+	this._soundTransform = new openfl_media_SoundTransform();
+	this._loop = false;
+	this._playing = false;
+	this._paused = false;
+	this._lastVolume = 1;
+	this._nsClient = { "onCuePoint" : $bind(this,this.metaDataHandler), "onMetaData" : $bind(this,this.metaDataHandler), "onBWDone" : $bind(this,this.onBWDone), "close" : $bind(this,this.streamClose)};
+	this._nc = new openfl_net_NetConnection();
+	Reflect.setProperty(this._nc,"client",this._nsClient);
+	this._nc.addEventListener("netStatus",$bind(this,this.netStatusHandler),false,0,true);
+	this._nc.addEventListener("securityError",$bind(this,this.securityErrorHandler),false,0,true);
+	this._nc.addEventListener("ioError",$bind(this,this.ioErrorHandler),false,0,true);
+	this._nc.addEventListener("asyncError",$bind(this,this.asyncErrorHandler),false,0,true);
+	this._nc.connect(null);
+	this._ns = new openfl_net_NetStream(this._nc);
+	this._ns.checkPolicyFile = true;
+	this._ns.client = this._nsClient;
+	this._ns.addEventListener("netStatus",$bind(this,this.netStatusHandler),false,0,true);
+	this._ns.addEventListener("asyncError",$bind(this,this.asyncErrorHandler),false,0,true);
+	this._ns.addEventListener("ioError",$bind(this,this.ioErrorHandler),false,0,true);
+	this._video = new openfl_media_Video();
+	this._video.attachNetStream(this._ns);
+	this._container = new openfl_display_Sprite();
+	this._container.addChild(this._video);
+};
+$hxClasses["video.SimpleVideoPlayer"] = video_SimpleVideoPlayer;
+video_SimpleVideoPlayer.__name__ = "video.SimpleVideoPlayer";
+video_SimpleVideoPlayer.__interfaces__ = [video_IVideoPlayer];
+video_SimpleVideoPlayer.prototype = {
+	_src: null
+	,_video: null
+	,_ns: null
+	,_nc: null
+	,_nsClient: null
+	,_soundTransform: null
+	,_loop: null
+	,_playing: null
+	,_paused: null
+	,_lastVolume: null
+	,_container: null
+	,play: function() {
+		if(this._src == null) {
+			haxe_Log.trace("Video source not set.",{ fileName : "Source/video/SimpleVideoPlayer.hx", lineNumber : 92, className : "video.SimpleVideoPlayer", methodName : "play"});
+			return;
+		}
+		if(this._paused) {
+			this._ns.resume();
+			this._paused = false;
+			this._playing = true;
+		} else if(!this._playing) {
+			this._ns.play(this._src);
+			this._playing = true;
+			this._paused = false;
+		}
+	}
+	,pause: function() {
+		if(!this._paused) {
+			this._ns.pause();
+			this._paused = true;
+		}
+	}
+	,seek: function(val) {
+		this.pause();
+		this._ns.seek(val);
+		this._ns.resume();
+	}
+	,stop: function() {
+		this._ns.close();
+		this._playing = false;
+		this._paused = false;
+	}
+	,dispose: function() {
+		this._ns.close();
+		this._video.attachNetStream(null);
+		this._ns.removeEventListener("netStatus",$bind(this,this.netStatusHandler));
+		this._ns.removeEventListener("asyncError",$bind(this,this.asyncErrorHandler));
+		this._ns.removeEventListener("ioError",$bind(this,this.ioErrorHandler));
+		this._nc.removeEventListener("netStatus",$bind(this,this.netStatusHandler));
+		this._nc.removeEventListener("securityError",$bind(this,this.securityErrorHandler));
+		this._nc.removeEventListener("ioError",$bind(this,this.ioErrorHandler));
+		this._nc.removeEventListener("asyncError",$bind(this,this.asyncErrorHandler));
+		this._container.removeChild(this._video);
+		this._container = null;
+		this._src = null;
+		this._ns = null;
+		this._nc = null;
+		this._nsClient = null;
+		this._video = null;
+		this._soundTransform = null;
+		this._playing = false;
+		this._paused = false;
+	}
+	,asyncErrorHandler: function(event) {
+	}
+	,metaDataHandler: function(oData) {
+	}
+	,ioErrorHandler: function(e) {
+		haxe_Log.trace("An IOerror occured: " + e.text,{ fileName : "Source/video/SimpleVideoPlayer.hx", lineNumber : 177, className : "video.SimpleVideoPlayer", methodName : "ioErrorHandler"});
+	}
+	,securityErrorHandler: function(e) {
+		haxe_Log.trace("A security error occured: " + e.text + " Remember that the FLV must be in the same security sandbox as your SWF.",{ fileName : "Source/video/SimpleVideoPlayer.hx", lineNumber : 182, className : "video.SimpleVideoPlayer", methodName : "securityErrorHandler"});
+	}
+	,onBWDone: function() {
+	}
+	,streamClose: function() {
+		haxe_Log.trace("The stream was closed. Incorrect URL?",{ fileName : "Source/video/SimpleVideoPlayer.hx", lineNumber : 192, className : "video.SimpleVideoPlayer", methodName : "streamClose"});
+	}
+	,netStatusHandler: function(e) {
+		switch(e.info.code) {
+		case "NetConnection.Connect.Success":
+			haxe_Log.trace("Connected to stream",{ fileName : "Source/video/SimpleVideoPlayer.hx", lineNumber : 207, className : "video.SimpleVideoPlayer", methodName : "netStatusHandler", customParams : [e]});
+			break;
+		case "NetStream.Play.Play":
+			break;
+		case "NetStream.Play.Stop":
+			if(this.get_loop()) {
+				this._ns.play(this._src);
+			}
+			break;
+		case "NetStream.Play.StreamNotFound":
+			haxe_Log.trace("The file " + this._src + " was not found",{ fileName : "Source/video/SimpleVideoPlayer.hx", lineNumber : 205, className : "video.SimpleVideoPlayer", methodName : "netStatusHandler", customParams : [e]});
+			break;
+		}
+	}
+	,get_source: function() {
+		return this._src;
+	}
+	,set_source: function(src) {
+		this._src = src;
+		if(this._playing) {
+			this._ns.play(this._src);
+		}
+		return src;
+	}
+	,get_loop: function() {
+		return this._loop;
+	}
+	,set_loop: function(val) {
+		this._loop = val;
+		return val;
+	}
+	,get_volume: function() {
+		return this._ns.soundTransform.volume;
+	}
+	,set_volume: function(val) {
+		this._soundTransform.volume = val;
+		this._ns.soundTransform = this._soundTransform;
+		this._lastVolume = val;
+		return val;
+	}
+	,get_pan: function() {
+		return this._ns.soundTransform.pan;
+	}
+	,set_pan: function(val) {
+		this._soundTransform.pan = this.get_pan();
+		this._ns.soundTransform = this._soundTransform;
+		return val;
+	}
+	,get_mute: function() {
+		return this._ns.soundTransform.volume == 0;
+	}
+	,set_mute: function(val) {
+		this._soundTransform.volume = val ? 0 : this._lastVolume;
+		this._ns.soundTransform = this._soundTransform;
+		return val;
+	}
+	,get_soundTransform: function() {
+		return this._ns.soundTransform;
+	}
+	,set_soundTransform: function(val) {
+		this._ns.soundTransform = val;
+		return val;
+	}
+	,get_width: function() {
+		return this._video.get_width() | 0;
+	}
+	,set_width: function(val) {
+		this._video.set_width(val);
+		return val;
+	}
+	,get_height: function() {
+		return this._video.get_height() | 0;
+	}
+	,set_height: function(val) {
+		this._video.set_height(val);
+		return val;
+	}
+	,get_container: function() {
+		return this._container;
+	}
+	,get_time: function() {
+		return this._ns.time;
+	}
+	,get_playing: function() {
+		return this._playing;
+	}
+	,get_paused: function() {
+		return this._paused;
+	}
+	,__class__: video_SimpleVideoPlayer
+	,__properties__: {get_paused:"get_paused",get_playing:"get_playing",get_time:"get_time",get_container:"get_container",set_height:"set_height",get_height:"get_height",set_width:"set_width",get_width:"get_width",set_soundTransform:"set_soundTransform",get_soundTransform:"get_soundTransform",set_mute:"set_mute",get_mute:"get_mute",set_pan:"set_pan",get_pan:"get_pan",set_volume:"set_volume",get_volume:"get_volume",set_loop:"set_loop",get_loop:"get_loop",set_source:"set_source",get_source:"get_source"}
+};
 function $getIterator(o) { if( o instanceof Array ) return HxOverrides.iter(o); else return o.iterator(); }
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
 if(typeof $global.$haxeUID == "undefined") $global.$haxeUID = 0;
@@ -75514,6 +76222,7 @@ openfl__$internal_renderer_canvas_CanvasGraphics.fillCommands = new openfl__$int
 openfl__$internal_renderer_canvas_CanvasGraphics.strokeCommands = new openfl__$internal_renderer_DrawCommandBuffer();
 openfl__$internal_renderer_canvas_CanvasShape.__meta__ = { obj : { SuppressWarnings : ["checkstyle:FieldDocComment"]}};
 openfl__$internal_renderer_canvas_CanvasTextField.__meta__ = { obj : { SuppressWarnings : ["checkstyle:FieldDocComment"]}};
+openfl__$internal_renderer_canvas_CanvasVideo.__meta__ = { obj : { SuppressWarnings : ["checkstyle:FieldDocComment"]}};
 openfl__$internal_renderer_context3D_Context3DBitmap.__meta__ = { obj : { SuppressWarnings : ["checkstyle:FieldDocComment"]}};
 openfl__$internal_renderer_context3D_Context3DBuffer.__meta__ = { obj : { SuppressWarnings : ["checkstyle:FieldDocComment"]}};
 openfl__$internal_renderer_context3D_Context3DBuffer.MAX_INDEX_BUFFER_LENGTH = 65535;
@@ -75549,6 +76258,8 @@ openfl__$internal_renderer_context3D_Context3DMaskShader.opaqueBitmapData = new 
 openfl__$internal_renderer_context3D_Context3DShape.__meta__ = { obj : { SuppressWarnings : ["checkstyle:FieldDocComment"]}};
 openfl__$internal_renderer_context3D_Context3DState.__meta__ = { obj : { SuppressWarnings : ["checkstyle:FieldDocComment"]}};
 openfl__$internal_renderer_context3D_Context3DTextField.__meta__ = { obj : { SuppressWarnings : ["checkstyle:FieldDocComment"]}};
+openfl__$internal_renderer_context3D_Context3DVideo.__meta__ = { obj : { SuppressWarnings : ["checkstyle:FieldDocComment"]}};
+openfl__$internal_renderer_context3D_Context3DVideo.__textureSizeValue = [0,0.];
 openfl__$internal_renderer_dom_DOMBitmap.__meta__ = { obj : { SuppressWarnings : ["checkstyle:FieldDocComment"]}};
 openfl__$internal_renderer_dom_DOMDisplayObject.__meta__ = { obj : { SuppressWarnings : ["checkstyle:FieldDocComment"]}};
 openfl__$internal_renderer_dom_DOMShape.__meta__ = { obj : { SuppressWarnings : ["checkstyle:FieldDocComment"]}};
@@ -75558,6 +76269,7 @@ openfl__$internal_renderer_dom_DOMTextField.__regexFace = new EReg("face=(\"([^\
 openfl__$internal_renderer_dom_DOMTextField.__regexFont = new EReg("<font ([^>]+)>","gi");
 openfl__$internal_renderer_dom_DOMTextField.__regexCloseFont = new EReg("</font>","gi");
 openfl__$internal_renderer_dom_DOMTextField.__regexSize = new EReg("size=(\"([^\"]+)\"|'([^']+)')","i");
+openfl__$internal_renderer_dom_DOMVideo.__meta__ = { obj : { SuppressWarnings : ["checkstyle:FieldDocComment"]}};
 openfl__$internal_text_GlyphPosition.__meta__ = { obj : { SuppressWarnings : [["checkstyle:FieldDocComment","checkstyle:Dynamic"]]}};
 openfl__$internal_text_TextEngine.__meta__ = { obj : { SuppressWarnings : ["checkstyle:FieldDocComment"]}, fields : { __cairoFont : { SuppressWarnings : ["checkstyle:Dynamic"]}}};
 openfl__$internal_text_TextEngine.UTF8_TAB = 9;
@@ -75956,6 +76668,7 @@ openfl_events_ActivityEvent.ACTIVITY = "activity";
 openfl_events_TextEvent.LINK = "link";
 openfl_events_TextEvent.TEXT_INPUT = "textInput";
 openfl_events_ErrorEvent.ERROR = "error";
+openfl_events_AsyncErrorEvent.ASYNC_ERROR = "asyncError";
 openfl_events__$EventDispatcher_DispatchIterator.__meta__ = { obj : { SuppressWarnings : ["checkstyle:FieldDocComment"]}};
 openfl_events__$EventDispatcher_Listener.__meta__ = { obj : { SuppressWarnings : ["checkstyle:FieldDocComment"]}};
 openfl_events_FocusEvent.FOCUS_IN = "focusIn";
@@ -76030,6 +76743,7 @@ openfl_media_SoundTransform.__meta__ = { fields : { clone : { SuppressWarnings :
 openfl_media_SoundMixer.MAX_ACTIVE_CHANNELS = 32;
 openfl_media_SoundMixer.__soundChannels = [];
 openfl_media_SoundMixer.__soundTransform = new openfl_media_SoundTransform();
+openfl_media_Video.VERTEX_BUFFER_STRIDE = 5;
 openfl_net_NetConnection.__meta__ = { statics : { CONNECT_SUCCESS : { SuppressWarnings : ["checkstyle:FieldDocComment"]}}};
 openfl_net_NetConnection.CONNECT_SUCCESS = "NetConnection.Connect.Success";
 openfl_net_NetStream.__meta__ = { fields : { audioCodec : { SuppressWarnings : ["checkstyle:FieldDocComment"]}, decodedFrames : { SuppressWarnings : ["checkstyle:FieldDocComment"]}, speed : { SuppressWarnings : ["checkstyle:FieldDocComment"]}, requestVideoStatus : { SuppressWarnings : ["checkstyle:FieldDocComment"]}}};
