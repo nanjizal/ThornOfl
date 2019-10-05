@@ -893,9 +893,9 @@ ApplicationMain.create = function(config) {
 	ManifestResources.init(config);
 	var _this = app.meta;
 	if(__map_reserved["build"] != null) {
-		_this.setReserved("build","8");
+		_this.setReserved("build","9");
 	} else {
-		_this.h["build"] = "8";
+		_this.h["build"] = "9";
 	}
 	var _this1 = app.meta;
 	if(__map_reserved["company"] != null) {
@@ -25158,7 +25158,7 @@ var lime_utils_AssetCache = function() {
 	this.audio = new haxe_ds_StringMap();
 	this.font = new haxe_ds_StringMap();
 	this.image = new haxe_ds_StringMap();
-	this.version = 136376;
+	this.version = 349034;
 };
 $hxClasses["lime.utils.AssetCache"] = lime_utils_AssetCache;
 lime_utils_AssetCache.__name__ = "lime.utils.AssetCache";
@@ -74215,7 +74215,7 @@ var visual_Dragon = function(scope) {
 	this.clip = openfl_utils_Assets.getMovieClip("swf-library:dragon2Hold");
 	this.clip.set_scaleX(-1);
 	this.clip.set_x(0.);
-	this.clip.set_y(220.);
+	this.clip.set_y(310.);
 	this.holder.addChild(this.clip);
 };
 $hxClasses["visual.Dragon"] = visual_Dragon;

@@ -28,7 +28,7 @@ class Dragon {
         clip = Assets.getMovieClip ("swf-library:dragon2Hold");
         clip.scaleX = -1;
         clip.x = 0.;
-        clip.y = 220.;
+        clip.y = 310.;
         holder.addChild( clip );
     }
     /*
