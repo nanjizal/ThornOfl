@@ -893,9 +893,9 @@ ApplicationMain.create = function(config) {
 	ManifestResources.init(config);
 	var _this = app.meta;
 	if(__map_reserved["build"] != null) {
-		_this.setReserved("build","6");
+		_this.setReserved("build","7");
 	} else {
-		_this.h["build"] = "6";
+		_this.h["build"] = "7";
 	}
 	var _this1 = app.meta;
 	if(__map_reserved["company"] != null) {
@@ -4194,31 +4194,8 @@ openfl_display_Sprite.prototype = $extend(openfl_display_DisplayObjectContainer.
 	,__properties__: $extend(openfl_display_DisplayObjectContainer.prototype.__properties__,{get_graphics:"get_graphics",set_buttonMode:"set_buttonMode",get_buttonMode:"get_buttonMode"})
 });
 var Main = function() {
-	this.speed = 2.;
-	this.forward = true;
-	this.turnRoundX = 700.;
-	this.starsSound = "AMBIENT -  MP3 TEST 1.mp3";
-	this.s15 = "TAPLow05.wav";
-	this.s14 = "TAPLow04.wav";
-	this.s13 = "TAPLow03.wav";
-	this.s12 = "TAPLow02.wav";
-	this.s11 = "TAPLow01.wav";
-	this.s10 = "TAP03.wav";
-	this.s9 = "TAP02.wav";
-	this.s8 = "TAP01.wav";
-	this.s7 = "TAP_low01.ogg";
-	this.s6 = "TAP_low01.mp3";
-	this.s5 = "TAP_low_02.ogg";
-	this.s4 = "TAP_low_02.mp3";
-	this.s3 = "TAP_High_02.ogg";
-	this.s2 = "TAP_High_02.mp3";
-	this.s1 = "TAP_High_01.ogg";
-	this.s0 = "TAP_High_01.mp3";
 	openfl_display_Sprite.call(this);
-	this.clip = openfl_utils_Assets.getMovieClip("swf-library:dragon");
-	this.clip.set_x(100.);
-	this.clip.set_y(100.);
-	this.addChild(this.clip);
+	this.dragon = new visual_Dragon(this);
 	this.addEventListener("enterFrame",$bind(this,this.this_onEnterFrame));
 	this.drawButton(50,50,65280);
 };
@@ -4226,44 +4203,11 @@ $hxClasses["Main"] = Main;
 Main.__name__ = "Main";
 Main.__super__ = openfl_display_Sprite;
 Main.prototype = $extend(openfl_display_Sprite.prototype,{
-	clip: null
-	,s0: null
-	,s1: null
-	,s2: null
-	,s3: null
-	,s4: null
-	,s5: null
-	,s6: null
-	,s7: null
-	,s8: null
-	,s9: null
-	,s10: null
-	,s11: null
-	,s12: null
-	,s13: null
-	,s14: null
-	,s15: null
-	,starsSound: null
+	dragon: null
 	,soundController: null
-	,layout: null
-	,turnRoundX: null
-	,forward: null
-	,speed: null
 	,drawButton: function(x,y,c) {
-		var but = new openfl_display_Sprite();
-		var g = but.get_graphics();
-		g.beginFill(c,1);
-		g.lineStyle(0,c,1);
-		g.drawRect(0,0,70,50);
-		g.endFill();
-		this.addChild(but);
-		but.set_x(x);
-		but.set_y(y);
-		but.addEventListener("mouseDown",$bind(this,this.mouseDown));
-	}
-	,mouseDown: function(event) {
-		haxe_Log.trace("play music",{ fileName : "Source/Main.hx", lineNumber : 62, className : "Main", methodName : "mouseDown"});
-		this.playMusic();
+		var testButton = new visual_TestButton(this,x,y,c);
+		testButton.buttonDown = $bind(this,this.playMusic);
 	}
 	,playMusic: function() {
 		this.soundController = new sound_SoundController();
@@ -4271,23 +4215,7 @@ Main.prototype = $extend(openfl_display_Sprite.prototype,{
 	}
 	,this_onEnterFrame: function(event) {
 		var currentTime = openfl_Lib.getTimer();
-		if(this.forward) {
-			var _g = this.clip;
-			_g.set_x(_g.get_x() + this.speed);
-		} else {
-			var _g1 = this.clip;
-			_g1.set_x(_g1.get_x() - this.speed);
-		}
-		var _g2 = this.clip;
-		_g2.set_y(_g2.get_y() + 3 * (Math.random() - 0.5));
-		if(this.clip.get_x() > this.turnRoundX && this.forward) {
-			this.clip.set_scaleX(-1.);
-			this.forward = false;
-		}
-		if(this.clip.get_x() < 0. && !this.forward) {
-			this.clip.set_scaleX(1.);
-			this.forward = true;
-		}
+		this.dragon.update();
 	}
 	,__class__: Main
 });
@@ -4509,25 +4437,6 @@ Reflect.field = function(o,field) {
 		haxe_CallStack.lastException = e;
 		var e1 = ((e) instanceof js__$Boot_HaxeError) ? e.val : e;
 		return null;
-	}
-};
-Reflect.getProperty = function(o,field) {
-	var tmp;
-	if(o == null) {
-		return null;
-	} else {
-		var tmp1;
-		if(o.__properties__) {
-			tmp = o.__properties__["get_" + field];
-			tmp1 = tmp;
-		} else {
-			tmp1 = false;
-		}
-		if(tmp1) {
-			return o[tmp]();
-		} else {
-			return o[field];
-		}
 	}
 };
 Reflect.setProperty = function(o,field,value) {
@@ -6731,684 +6640,6 @@ js_lib__$ArrayBuffer_ArrayBufferCompat.sliceImpl = function(begin,end) {
 	var resultArray = new Uint8Array(u.byteLength);
 	resultArray.set(u);
 	return resultArray.buffer;
-};
-var layout_Layout = function(initWidth,initHeight) {
-	if(initHeight == null) {
-		initHeight = 0;
-	}
-	if(initWidth == null) {
-		initWidth = 0;
-	}
-	openfl_events_EventDispatcher.call(this);
-	this._initWidth = initWidth;
-	this._initHeight = initHeight;
-	this.initialize();
-};
-$hxClasses["layout.Layout"] = layout_Layout;
-layout_Layout.__name__ = "layout.Layout";
-layout_Layout.__super__ = openfl_events_EventDispatcher;
-layout_Layout.prototype = $extend(openfl_events_EventDispatcher.prototype,{
-	height: null
-	,initHeight: null
-	,initWidth: null
-	,width: null
-	,items: null
-	,_initHeight: null
-	,_initWidth: null
-	,addItem: function(item,autoConfigureVertical,autoConfigureHorizontal) {
-		if(autoConfigureHorizontal == null) {
-			autoConfigureHorizontal = true;
-		}
-		if(autoConfigureVertical == null) {
-			autoConfigureVertical = true;
-		}
-		this.items.addItem(item,autoConfigureVertical,autoConfigureHorizontal,false);
-	}
-	,initialize: function() {
-		this.items = new layout_LayoutGroup(layout_LayoutType.NONE,layout_LayoutType.NONE,false);
-		this.items.resize(this._initWidth,this._initHeight);
-	}
-	,layoutItems: function() {
-		this.items.layoutItemGroup();
-	}
-	,resize: function(width,height) {
-		if(this._initWidth == 0 && this._initHeight == 0) {
-			if(this.items.get_width() == 0 && this.items.get_height() == 0) {
-				this.items.refreshSize();
-			}
-			this._initWidth = this.items.get_width();
-			this._initHeight = this.items.get_height();
-			this.items.setInitSize(this._initWidth,this._initHeight);
-			this.items.configureItems();
-		}
-		var cacheWidth = this.items.get_width();
-		var cacheHeight = this.items.get_height();
-		this.items.resize(width,height);
-		if(this.items.get_width() != cacheWidth || this.items.get_height() != cacheHeight) {
-			this.dispatchEvent(new openfl_events_Event("resize"));
-		}
-	}
-	,setMinSize: function(minWidth,minHeight) {
-		if(minHeight == null) {
-			minHeight = 0;
-		}
-		if(minWidth == null) {
-			minWidth = 0;
-		}
-		this.items.minWidth = minWidth;
-		this.items.minHeight = minHeight;
-	}
-	,get_clampHeight: function() {
-		return this.items.clampHeight;
-	}
-	,set_clampHeight: function(value) {
-		return this.items.clampHeight = value;
-	}
-	,get_clampWidth: function() {
-		return this.items.clampWidth;
-	}
-	,set_clampWidth: function(value) {
-		return this.items.clampWidth = value;
-	}
-	,get_height: function() {
-		return this.items.get_height();
-	}
-	,get_initHeight: function() {
-		return this.items.initHeight;
-	}
-	,get_initWidth: function() {
-		return this.items.initWidth;
-	}
-	,get_minHeight: function() {
-		return this.items.minHeight;
-	}
-	,set_minHeight: function(value) {
-		return this.items.minHeight = value;
-	}
-	,get_minWidth: function() {
-		return this.items.minWidth;
-	}
-	,set_minWidth: function(value) {
-		return this.items.minWidth = value;
-	}
-	,get_pixelScale: function() {
-		return this.items.get_pixelScale();
-	}
-	,set_pixelScale: function(value) {
-		return this.items.set_pixelScale(value);
-	}
-	,get_width: function() {
-		return this.items.get_width();
-	}
-	,__class__: layout_Layout
-	,__properties__: {get_width:"get_width",set_pixelScale:"set_pixelScale",get_pixelScale:"get_pixelScale",set_minWidth:"set_minWidth",get_minWidth:"get_minWidth",set_minHeight:"set_minHeight",get_minHeight:"get_minHeight",get_initWidth:"get_initWidth",get_height:"get_height",set_clampWidth:"set_clampWidth",get_clampWidth:"get_clampWidth",set_clampHeight:"set_clampHeight",get_clampHeight:"get_clampHeight"}
-});
-var layout_LayoutItem = function(object,verticalLayout,horizontalLayout,rigidVertical,rigidHorizontal) {
-	if(rigidHorizontal == null) {
-		rigidHorizontal = true;
-	}
-	if(rigidVertical == null) {
-		rigidVertical = true;
-	}
-	if(verticalLayout == null) {
-		verticalLayout = layout_LayoutType.TOP;
-	}
-	if(horizontalLayout == null) {
-		horizontalLayout = layout_LayoutType.LEFT;
-	}
-	this.object = object;
-	this.verticalLayout = verticalLayout;
-	this.horizontalLayout = horizontalLayout;
-	this.rigidVertical = rigidVertical;
-	this.rigidHorizontal = rigidHorizontal;
-	this.initialize();
-};
-$hxClasses["layout.LayoutItem"] = layout_LayoutItem;
-layout_LayoutItem.__name__ = "layout.LayoutItem";
-layout_LayoutItem.prototype = {
-	horizontalLayout: null
-	,marginLeft: null
-	,marginRight: null
-	,marginTop: null
-	,marginBottom: null
-	,minHeight: null
-	,minWidth: null
-	,object: null
-	,rigidHorizontal: null
-	,rigidVertical: null
-	,verticalLayout: null
-	,configureItems: function() {
-	}
-	,getField: function(target,propertyName) {
-		var value = null;
-		if(Object.prototype.hasOwnProperty.call(target,propertyName)) {
-			value = Reflect.field(target,propertyName);
-		} else {
-			value = Reflect.getProperty(target,propertyName);
-		}
-		return value;
-	}
-	,ifDefined: function(value,defaultValue) {
-		if(value != null) {
-			if(typeof(value) != "string" || typeof(value) == "string" && value != "") {
-				return value;
-			}
-		}
-		return defaultValue;
-	}
-	,initialize: function() {
-		this.setMargins();
-	}
-	,layoutItem: function(layoutGroup) {
-		switch(this.verticalLayout._hx_index) {
-		case 0:
-			this.set_objectY(layoutGroup.get_height() - this.get_objectHeight() - this.marginBottom);
-			break;
-		case 1:
-			this.set_objectY(layoutGroup.get_height() / 2 - this.get_objectHeight() / 2 + this.marginTop - this.marginBottom);
-			break;
-		case 5:
-			this.set_objectY(this.marginTop);
-			var stretchHeight = layoutGroup.get_height() - this.marginTop - this.marginBottom;
-			if(stretchHeight < 0) {
-				stretchHeight = 0;
-			}
-			if(this.rigidVertical && this.minHeight != null && stretchHeight < this.minHeight) {
-				this.set_objectHeight(this.minHeight);
-			} else {
-				this.set_objectHeight(stretchHeight);
-			}
-			break;
-		case 6:
-			this.set_objectY(this.marginTop);
-			break;
-		default:
-		}
-		switch(this.horizontalLayout._hx_index) {
-		case 1:
-			this.set_objectX(layoutGroup.get_width() / 2 - this.get_objectWidth() / 2 + this.marginLeft - this.marginRight);
-			break;
-		case 2:
-			this.set_objectX(this.marginLeft);
-			break;
-		case 4:
-			this.set_objectX(layoutGroup.get_width() - this.get_objectWidth() - this.marginRight);
-			break;
-		case 5:
-			this.set_objectX(this.marginLeft);
-			var stretchWidth = layoutGroup.get_width() - this.marginLeft - this.marginRight;
-			if(stretchWidth < 0) {
-				stretchWidth = 0;
-			}
-			if(this.rigidHorizontal && this.minWidth != null && stretchWidth < this.minWidth) {
-				this.set_objectWidth(this.minWidth);
-			} else {
-				this.set_objectWidth(stretchWidth);
-			}
-			break;
-		default:
-		}
-		var _g2 = this;
-		_g2.set_objectX(_g2.get_objectX() + layoutGroup.get_x());
-		var _g21 = this;
-		_g21.set_objectY(_g21.get_objectY() + layoutGroup.get_y());
-	}
-	,refreshSize: function() {
-	}
-	,setField: function(target,propertyName,value) {
-		if(Object.prototype.hasOwnProperty.call(target,propertyName)) {
-			target[propertyName] = value;
-		} else {
-			Reflect.setProperty(target,propertyName,value);
-		}
-	}
-	,setMargins: function(marginTop,marginRight,marginBottom,marginLeft) {
-		if(marginLeft == null) {
-			marginLeft = 0;
-		}
-		if(marginBottom == null) {
-			marginBottom = 0;
-		}
-		if(marginRight == null) {
-			marginRight = 0;
-		}
-		if(marginTop == null) {
-			marginTop = 0;
-		}
-		this.marginTop = marginTop;
-		this.marginRight = marginRight;
-		this.marginBottom = marginBottom;
-		this.marginLeft = marginLeft;
-	}
-	,setMinSize: function(minWidth,minHeight) {
-		if(minHeight == null) {
-			minHeight = 0;
-		}
-		if(minWidth == null) {
-			minWidth = 0;
-		}
-		this.minWidth = minWidth;
-		this.minHeight = minHeight;
-	}
-	,get_objectHeight: function() {
-		var target = this.object;
-		var value = null;
-		if(Object.prototype.hasOwnProperty.call(target,"height")) {
-			value = Reflect.field(target,"height");
-		} else {
-			value = Reflect.getProperty(target,"height");
-		}
-		return value;
-	}
-	,set_objectHeight: function(value) {
-		var target = this.object;
-		var value1 = value;
-		if(Object.prototype.hasOwnProperty.call(target,"height")) {
-			target["height"] = value1;
-		} else {
-			Reflect.setProperty(target,"height",value1);
-		}
-		return value;
-	}
-	,get_objectScaleX: function() {
-		var target = this.object;
-		var value = null;
-		if(Object.prototype.hasOwnProperty.call(target,"scaleX")) {
-			value = Reflect.field(target,"scaleX");
-		} else {
-			value = Reflect.getProperty(target,"scaleX");
-		}
-		return value;
-	}
-	,set_objectScaleX: function(value) {
-		var target = this.object;
-		var value1 = value;
-		if(Object.prototype.hasOwnProperty.call(target,"scaleX")) {
-			target["scaleX"] = value1;
-		} else {
-			Reflect.setProperty(target,"scaleX",value1);
-		}
-		return value;
-	}
-	,get_objectScaleY: function() {
-		var target = this.object;
-		var value = null;
-		if(Object.prototype.hasOwnProperty.call(target,"scaleY")) {
-			value = Reflect.field(target,"scaleY");
-		} else {
-			value = Reflect.getProperty(target,"scaleY");
-		}
-		return value;
-	}
-	,set_objectScaleY: function(value) {
-		var target = this.object;
-		var value1 = value;
-		if(Object.prototype.hasOwnProperty.call(target,"scaleY")) {
-			target["scaleY"] = value1;
-		} else {
-			Reflect.setProperty(target,"scaleY",value1);
-		}
-		return value;
-	}
-	,get_objectWidth: function() {
-		var target = this.object;
-		var value = null;
-		if(Object.prototype.hasOwnProperty.call(target,"width")) {
-			value = Reflect.field(target,"width");
-		} else {
-			value = Reflect.getProperty(target,"width");
-		}
-		return value;
-	}
-	,set_objectWidth: function(value) {
-		var target = this.object;
-		var value1 = value;
-		if(Object.prototype.hasOwnProperty.call(target,"width")) {
-			target["width"] = value1;
-		} else {
-			Reflect.setProperty(target,"width",value1);
-		}
-		return value;
-	}
-	,get_objectX: function() {
-		var target = this.object;
-		var value = null;
-		if(Object.prototype.hasOwnProperty.call(target,"x")) {
-			value = Reflect.field(target,"x");
-		} else {
-			value = Reflect.getProperty(target,"x");
-		}
-		return value;
-	}
-	,set_objectX: function(value) {
-		var target = this.object;
-		var value1 = value;
-		if(Object.prototype.hasOwnProperty.call(target,"x")) {
-			target["x"] = value1;
-		} else {
-			Reflect.setProperty(target,"x",value1);
-		}
-		return value;
-	}
-	,get_objectY: function() {
-		var target = this.object;
-		var value = null;
-		if(Object.prototype.hasOwnProperty.call(target,"y")) {
-			value = Reflect.field(target,"y");
-		} else {
-			value = Reflect.getProperty(target,"y");
-		}
-		return value;
-	}
-	,set_objectY: function(value) {
-		var target = this.object;
-		var value1 = value;
-		if(Object.prototype.hasOwnProperty.call(target,"y")) {
-			target["y"] = value1;
-		} else {
-			Reflect.setProperty(target,"y",value1);
-		}
-		return value;
-	}
-	,__class__: layout_LayoutItem
-	,__properties__: {set_objectY:"set_objectY",get_objectY:"get_objectY",set_objectX:"set_objectX",get_objectX:"get_objectX",set_objectWidth:"set_objectWidth",get_objectWidth:"get_objectWidth",set_objectScaleY:"set_objectScaleY",get_objectScaleY:"get_objectScaleY",set_objectScaleX:"set_objectScaleX",get_objectScaleX:"get_objectScaleX",set_objectHeight:"set_objectHeight",get_objectHeight:"get_objectHeight"}
-};
-var layout_LayoutGroup = function(verticalLayout,horizontalLayout,rigidVertical,rigidHorizontal) {
-	if(rigidHorizontal == null) {
-		rigidHorizontal = true;
-	}
-	if(rigidVertical == null) {
-		rigidVertical = true;
-	}
-	if(verticalLayout == null) {
-		verticalLayout = layout_LayoutType.NONE;
-	}
-	if(horizontalLayout == null) {
-		horizontalLayout = layout_LayoutType.NONE;
-	}
-	layout_LayoutItem.call(this,this,verticalLayout,horizontalLayout,rigidVertical,rigidHorizontal);
-	this._x = 0;
-	this._y = 0;
-	this._width = 0;
-	this._height = 0;
-	this._pixelScale = 0;
-	this.resize(0,0);
-};
-$hxClasses["layout.LayoutGroup"] = layout_LayoutGroup;
-layout_LayoutGroup.__name__ = "layout.LayoutGroup";
-layout_LayoutGroup.__super__ = layout_LayoutItem;
-layout_LayoutGroup.prototype = $extend(layout_LayoutItem.prototype,{
-	clampHeight: null
-	,clampWidth: null
-	,initHeight: null
-	,initScale: null
-	,initWidth: null
-	,items: null
-	,itemConfigureHorizontal: null
-	,itemConfigureVertical: null
-	,loop: null
-	,_height: null
-	,_pixelScale: null
-	,_width: null
-	,_x: null
-	,_y: null
-	,addItem: function(item,autoConfigureVertical,autoConfigureHorizontal,updateSize) {
-		if(updateSize == null) {
-			updateSize = true;
-		}
-		if(autoConfigureHorizontal == null) {
-			autoConfigureHorizontal = true;
-		}
-		if(autoConfigureVertical == null) {
-			autoConfigureVertical = true;
-		}
-		if(this.initWidth != 0 && this.initHeight != 0) {
-			this.configureItem(item,autoConfigureVertical,autoConfigureHorizontal);
-		}
-		this.items.push(item);
-		this.itemConfigureVertical.push(autoConfigureVertical);
-		this.itemConfigureHorizontal.push(autoConfigureHorizontal);
-		if(updateSize) {
-			this.refreshSize();
-			if(this.initWidth != 0 && this.initHeight != 0) {
-				this.configureItems();
-			}
-		}
-	}
-	,configureItem: function(item,autoConfigureVertical,autoConfigureHorizontal) {
-		item.configureItems();
-		if(autoConfigureVertical) {
-			switch(item.verticalLayout._hx_index) {
-			case 0:
-				item.marginBottom = this.initHeight - item.get_objectY() - item.get_objectHeight() - this._y;
-				break;
-			case 1:
-				var verticalOffset = item.get_objectY() - (this.initHeight / 2 - item.get_objectHeight() / 2) - this._y;
-				if(verticalOffset > 0) {
-					item.marginTop = verticalOffset;
-				} else {
-					item.marginBottom = Math.abs(verticalOffset);
-				}
-				break;
-			case 5:
-				item.marginTop = item.get_objectY() - this._y;
-				item.marginBottom = this.initHeight - item.get_objectY() - item.get_objectHeight() - this._y;
-				if(item.rigidVertical && item.minHeight == null) {
-					item.minHeight = item.get_objectHeight();
-				}
-				break;
-			case 6:
-				item.marginTop = item.get_objectY() - this._y;
-				break;
-			default:
-			}
-		}
-		if(autoConfigureHorizontal) {
-			switch(item.horizontalLayout._hx_index) {
-			case 1:
-				var horizontalOffset = item.get_objectX() - (this.initWidth / 2 - item.get_objectWidth() / 2) - this._x;
-				if(horizontalOffset > 0) {
-					item.marginLeft = horizontalOffset;
-				} else {
-					item.marginRight = Math.abs(horizontalOffset);
-				}
-				break;
-			case 2:
-				item.marginLeft = item.get_objectX() - this._x;
-				break;
-			case 4:
-				item.marginRight = this.initWidth - item.get_objectX() - item.get_objectWidth() - this._x;
-				break;
-			case 5:
-				item.marginLeft = item.get_objectX() - this._x;
-				item.marginRight = this.initWidth - item.get_objectX() - item.get_objectWidth() - this._x;
-				if(item.rigidHorizontal && item.minWidth == null) {
-					item.minWidth = item.get_objectWidth();
-				}
-				break;
-			default:
-			}
-		}
-	}
-	,configureItems: function() {
-		var _g = 0;
-		var _g1 = this.items.length;
-		while(_g < _g1) {
-			var i = _g++;
-			this.configureItem(this.items[i],this.itemConfigureVertical[i],this.itemConfigureHorizontal[i]);
-		}
-	}
-	,initialize: function() {
-		this.items = [];
-		this.itemConfigureHorizontal = [];
-		this.itemConfigureVertical = [];
-		layout_LayoutItem.prototype.initialize.call(this);
-	}
-	,layoutItemGroup: function() {
-		var minWidth = this.ifDefined(this.minWidth,0);
-		var minHeight = this.ifDefined(this.minHeight,0);
-		var minObjectHeight;
-		var minObjectWidth;
-		var _g = 0;
-		var _g1 = this.items;
-		while(_g < _g1.length) {
-			var item = _g1[_g];
-			++_g;
-			item.layoutItem(this);
-			if(item.rigidVertical) {
-				minObjectHeight = item.marginTop + item.marginBottom;
-				if(item.minHeight != null) {
-					minObjectHeight += item.minHeight;
-				} else {
-					minObjectHeight += item.get_objectHeight();
-				}
-				if(minHeight < minObjectHeight) {
-					minHeight = minObjectHeight;
-				}
-			}
-			if(item.rigidHorizontal) {
-				minObjectWidth = item.marginLeft + item.marginRight;
-				if(item.minWidth != null) {
-					minObjectWidth += item.minWidth;
-				} else {
-					minObjectWidth += item.get_objectWidth();
-				}
-				if(minWidth < minObjectWidth) {
-					minWidth = minObjectWidth;
-				}
-			}
-		}
-		var newWidth = this.get_width();
-		var newHeight = this.get_height();
-		if(newWidth < minWidth) {
-			newWidth = minWidth;
-		}
-		if(newHeight < minHeight) {
-			newHeight = minHeight;
-		}
-		if(this.clampWidth && newWidth > this.initWidth) {
-			newWidth = this.initWidth;
-		}
-		if(this.clampHeight && newHeight > this.initHeight) {
-			newHeight = this.initHeight;
-		}
-		if(newWidth != this.get_width() || newHeight != this.get_height()) {
-			if(!this.loop) {
-				this.loop = true;
-				this.resize(newWidth,newHeight);
-				this.loop = false;
-			}
-		}
-	}
-	,refreshSize: function() {
-		if(this.items.length > 0) {
-			var beginningX = Infinity;
-			var beginningY = Infinity;
-			var endX = -Infinity;
-			var endY = -Infinity;
-			var _g = 0;
-			var _g1 = this.items;
-			while(_g < _g1.length) {
-				var item = _g1[_g];
-				++_g;
-				item.refreshSize();
-				if(item.verticalLayout != layout_LayoutType.NONE) {
-					if(item.get_objectY() < beginningY) {
-						beginningY = item.get_objectY();
-					}
-					if(item.get_objectY() + item.get_objectHeight() > endY) {
-						endY = item.get_objectY() + item.get_objectHeight();
-					}
-				}
-				if(item.horizontalLayout != layout_LayoutType.NONE) {
-					if(item.get_objectX() < beginningX) {
-						beginningX = item.get_objectX();
-					}
-					if(item.get_objectX() + item.get_objectWidth() > endX) {
-						endX = item.get_objectX() + item.get_objectWidth();
-					}
-				}
-			}
-			if(beginningX != Infinity && endX != -Infinity) {
-				this._x = beginningX;
-				this._width = this.initWidth = endX - beginningX;
-			}
-			if(beginningY != Infinity && endY != -Infinity) {
-				this._y = beginningY;
-				this._height = this.initHeight = endY - beginningY;
-			}
-		}
-	}
-	,resize: function(width,height) {
-		this._width = width;
-		this._height = height;
-		if(this.items.length > 0) {
-			this.layoutItemGroup();
-		} else {
-			this.initWidth = width;
-			this.initHeight = height;
-		}
-	}
-	,scale: function(scale) {
-		this._pixelScale = scale;
-		if(this.items.length > 0) {
-			this.layoutItemGroup();
-		} else {
-			this.initScale = this._pixelScale;
-		}
-	}
-	,setInitSize: function(width,height) {
-		this.initWidth = width;
-		this.initHeight = height;
-	}
-	,get_height: function() {
-		return this._height;
-	}
-	,set_height: function(value) {
-		this.resize(this._width,value);
-		return this._height;
-	}
-	,get_pixelScale: function() {
-		return this._pixelScale;
-	}
-	,set_pixelScale: function(value) {
-		this.scale(value);
-		return this._pixelScale;
-	}
-	,get_width: function() {
-		return this._width;
-	}
-	,set_width: function(value) {
-		this.resize(value,this._height);
-		return this._width;
-	}
-	,get_x: function() {
-		return this._x;
-	}
-	,set_x: function(value) {
-		this._x = value;
-		this.layoutItemGroup();
-		return this._x;
-	}
-	,get_y: function() {
-		return this._y;
-	}
-	,set_y: function(value) {
-		this._y = value;
-		this.layoutItemGroup();
-		return this._y;
-	}
-	,__class__: layout_LayoutGroup
-	,__properties__: $extend(layout_LayoutItem.prototype.__properties__,{set_y:"set_y",get_y:"get_y",set_x:"set_x",get_x:"get_x",set_width:"set_width",get_width:"get_width",set_pixelScale:"set_pixelScale",get_pixelScale:"get_pixelScale",set_height:"set_height",get_height:"get_height"})
-});
-var layout_LayoutType = $hxEnums["layout.LayoutType"] = { __ename__ : "layout.LayoutType", __constructs__ : ["BOTTOM","CENTER","LEFT","NONE","RIGHT","STRETCH","TOP"]
-	,BOTTOM: {_hx_index:0,__enum__:"layout.LayoutType",toString:$estr}
-	,CENTER: {_hx_index:1,__enum__:"layout.LayoutType",toString:$estr}
-	,LEFT: {_hx_index:2,__enum__:"layout.LayoutType",toString:$estr}
-	,NONE: {_hx_index:3,__enum__:"layout.LayoutType",toString:$estr}
-	,RIGHT: {_hx_index:4,__enum__:"layout.LayoutType",toString:$estr}
-	,STRETCH: {_hx_index:5,__enum__:"layout.LayoutType",toString:$estr}
-	,TOP: {_hx_index:6,__enum__:"layout.LayoutType",toString:$estr}
 };
 var lime__$internal_backend_html5_GameDeviceData = function() {
 	this.connected = true;
@@ -25794,7 +25025,7 @@ var lime_utils_AssetCache = function() {
 	this.audio = new haxe_ds_StringMap();
 	this.font = new haxe_ds_StringMap();
 	this.image = new haxe_ds_StringMap();
-	this.version = 854525;
+	this.version = 877894;
 };
 $hxClasses["lime.utils.AssetCache"] = lime_utils_AssetCache;
 lime_utils_AssetCache.__name__ = "lime.utils.AssetCache";
@@ -74756,6 +73987,70 @@ video_SimpleVideoPlayer.prototype = {
 	}
 	,__class__: video_SimpleVideoPlayer
 	,__properties__: {get_paused:"get_paused",get_playing:"get_playing",get_time:"get_time",get_container:"get_container",set_height:"set_height",get_height:"get_height",set_width:"set_width",get_width:"get_width",set_soundTransform:"set_soundTransform",get_soundTransform:"get_soundTransform",set_mute:"set_mute",get_mute:"get_mute",set_pan:"set_pan",get_pan:"get_pan",set_volume:"set_volume",get_volume:"get_volume",set_loop:"set_loop",get_loop:"get_loop",set_source:"set_source",get_source:"get_source"}
+};
+var visual_Dragon = function(scope) {
+	this.speed = 2.;
+	this.forward = true;
+	this.turnRoundX = 700.;
+	this.clip = openfl_utils_Assets.getMovieClip("swf-library:dragon");
+	this.clip.set_x(100.);
+	this.clip.set_y(100.);
+	scope.addChild(this.clip);
+};
+$hxClasses["visual.Dragon"] = visual_Dragon;
+visual_Dragon.__name__ = "visual.Dragon";
+visual_Dragon.prototype = {
+	turnRoundX: null
+	,forward: null
+	,speed: null
+	,clip: null
+	,update: function() {
+		this.backforward();
+	}
+	,backforward: function() {
+		if(this.forward) {
+			var _g = this.clip;
+			_g.set_x(_g.get_x() + this.speed);
+		} else {
+			var _g1 = this.clip;
+			_g1.set_x(_g1.get_x() - this.speed);
+		}
+		var _g2 = this.clip;
+		_g2.set_y(_g2.get_y() + 3 * (Math.random() - 0.5));
+		if(this.clip.get_x() > this.turnRoundX && this.forward) {
+			this.clip.set_scaleX(-1.);
+			this.forward = false;
+		}
+		if(this.clip.get_x() < 0. && !this.forward) {
+			this.clip.set_scaleX(1.);
+			this.forward = true;
+		}
+	}
+	,__class__: visual_Dragon
+};
+var visual_TestButton = function(scope,x,y,c) {
+	this.draw(scope,x,y,c);
+};
+$hxClasses["visual.TestButton"] = visual_TestButton;
+visual_TestButton.__name__ = "visual.TestButton";
+visual_TestButton.prototype = {
+	buttonDown: null
+	,draw: function(scope,x,y,c) {
+		var but = new openfl_display_Sprite();
+		var g = but.get_graphics();
+		g.beginFill(c,1);
+		g.lineStyle(0,c,1);
+		g.drawRect(0,0,70,50);
+		g.endFill();
+		scope.addChild(but);
+		but.set_x(x);
+		but.set_y(y);
+		but.addEventListener("mouseDown",$bind(this,this.mouseDown));
+	}
+	,mouseDown: function(event) {
+		this.buttonDown();
+	}
+	,__class__: visual_TestButton
 };
 function $getIterator(o) { if( o instanceof Array ) return HxOverrides.iter(o); else return o.iterator(); }
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
