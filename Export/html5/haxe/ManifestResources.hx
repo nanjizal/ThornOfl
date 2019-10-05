@@ -110,7 +110,7 @@ null
 
 #elseif (desktop || cpp)
 
-@:keep @:file("/projects/May2019/October2019/SimpleSWFLayout/Export/html5/obj/libraries/swf-library/swf-library.bin") @:noCompletion #if display private #end class __ASSET__lib_swf_library_swf_library_bin extends haxe.io.Bytes {}
+@:keep @:file("/projects/May2019/October2019/ThornOfl/Export/html5/obj/libraries/swf-library/swf-library.bin") @:noCompletion #if display private #end class __ASSET__lib_swf_library_swf_library_bin extends haxe.io.Bytes {}
 @:keep @:file("") @:noCompletion #if display private #end class __ASSET__lib_swf_library_json extends haxe.io.Bytes {}
 @:keep @:file("") @:noCompletion #if display private #end class __ASSET__manifest_default_json extends haxe.io.Bytes {}
 

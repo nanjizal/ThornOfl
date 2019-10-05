@@ -9,7 +9,7 @@
 -D layout=1.2.1
 -cp /usr/local/lib/haxeLibrary/trilateral/git
 -D trilateral=0.0.0
--cp /projects/May2019/October2019/SimpleSWFLayout/Export/html5/haxe/_generated
+-cp /projects/May2019/October2019/ThornOfl/Export/html5/haxe/_generated
 -cp Source
 -D tools=7.5.0
 -D swf=1
