@@ -5,3 +5,4 @@
 5 Rollover hittest for being able to climb, use Tint?
 6 API selection of different Thorn creatures
 7 Add child within dragon scope, so nested items move relative to parent
+8 Something else
