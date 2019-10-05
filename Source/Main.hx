@@ -30,7 +30,7 @@ class Main extends Sprite {
         } else {
             clip.x-= speed;
         }
-        clip.y += 3*(Math.random() - 0.5);
+        clip.y = Math.min(Math.max(clip.y + 3*(Math.random() - 0.5), 110.), 90.);
         if( clip.x > turnRoundX && forward ){
             clip.scaleX = -1.;
             forward = false;
