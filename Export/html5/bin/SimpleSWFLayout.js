@@ -893,9 +893,9 @@ ApplicationMain.create = function(config) {
 	ManifestResources.init(config);
 	var _this = app.meta;
 	if(__map_reserved["build"] != null) {
-		_this.setReserved("build","7");
+		_this.setReserved("build","8");
 	} else {
-		_this.h["build"] = "7";
+		_this.h["build"] = "8";
 	}
 	var _this1 = app.meta;
 	if(__map_reserved["company"] != null) {
@@ -4195,16 +4195,60 @@ openfl_display_Sprite.prototype = $extend(openfl_display_DisplayObjectContainer.
 });
 var Main = function() {
 	openfl_display_Sprite.call(this);
-	this.dragon = new visual_Dragon(this);
+	this.createBackground();
+	this.createMonsters();
+	this.createForeground();
+	this.keyboardInteraction = new interaction_KeyboardInteraction();
+	this.keyboardInteraction.update = $bind(this,this.update);
 	this.addEventListener("enterFrame",$bind(this,this.this_onEnterFrame));
-	this.drawButton(50,50,65280);
 };
 $hxClasses["Main"] = Main;
 Main.__name__ = "Main";
+Main.simpleHit = function(object,point) {
+	return object.hitTestPoint(point.x,point.y,true);
+};
+Main.pixelPerfectHitTest = function(object,point) {
+	if(((object) instanceof openfl_display_Bitmap)) {
+		return (js_Boot.__cast(object , openfl_display_Bitmap)).get_bitmapData().hitTest(new openfl_geom_Point(0,0),0,object.globalToLocal(point));
+	} else if(!object.hitTestPoint(point.x,point.y,true)) {
+		return false;
+	} else {
+		var bmapData = new openfl_display_BitmapData(object.get_width() | 0,object.get_height() | 0,true,0);
+		bmapData.draw(object,new openfl_geom_Matrix());
+		var returnVal = bmapData.hitTest(new openfl_geom_Point(0,0),0,object.globalToLocal(point));
+		bmapData.dispose();
+		return returnVal;
+	}
+};
 Main.__super__ = openfl_display_Sprite;
 Main.prototype = $extend(openfl_display_Sprite.prototype,{
 	dragon: null
+	,bat: null
+	,tiny: null
+	,background: null
+	,foreground: null
 	,soundController: null
+	,keyboardInteraction: null
+	,createBackground: function() {
+		this.background = new visual_Background(this);
+	}
+	,createForeground: function() {
+		this.foreground = new visual_Foreground(this);
+	}
+	,createMonsters: function() {
+		this.dragon = new visual_Dragon(this);
+		this.bat = new visual_Bat(this);
+		this.tiny = new visual_Tiny(this.bat.holder);
+	}
+	,hitDragon: function(x,y) {
+		var over = Main.simpleHit(this.dragon.holder,new openfl_geom_Point(x,y));
+		if(over) {
+			this.dragon.holder.set_alpha(0.5);
+		} else {
+			this.dragon.holder.set_alpha(1);
+		}
+		return over;
+	}
 	,drawButton: function(x,y,c) {
 		var testButton = new visual_TestButton(this,x,y,c);
 		testButton.buttonDown = $bind(this,this.playMusic);
@@ -4215,7 +4259,32 @@ Main.prototype = $extend(openfl_display_Sprite.prototype,{
 	}
 	,this_onEnterFrame: function(event) {
 		var currentTime = openfl_Lib.getTimer();
+		var current = openfl_Lib.get_current();
+		var stage = current.stage;
+		this.tiny.position(stage.get_mouseX() - this.tiny.holder.get_width() / 2,stage.get_mouseY() - this.tiny.holder.get_height() / 2);
+		haxe_Log.trace(this.hitDragon(stage.get_mouseX(),stage.get_mouseY()),{ fileName : "Source/Main.hx", lineNumber : 72, className : "Main", methodName : "this_onEnterFrame"});
 		this.dragon.update();
+	}
+	,update: function() {
+		if(this.keyboardInteraction.upDown) {
+			this.bat.move(0,-4);
+		} else if(this.keyboardInteraction.downDown) {
+			this.bat.move(0,4);
+		}
+		if(this.keyboardInteraction.leftDown) {
+			this.bat.move(-4,0);
+			this.background.move(4,0);
+			this.foreground.move(4,0);
+		} else if(this.keyboardInteraction.rightDown) {
+			this.bat.move(4,0);
+			this.background.move(-4,0);
+			this.foreground.move(-4,0);
+		}
+		var _this = this.keyboardInteraction;
+		_this.leftDown = false;
+		_this.rightDown = false;
+		_this.downDown = false;
+		_this.upDown = false;
 	}
 	,__class__: Main
 });
@@ -4405,7 +4474,7 @@ ManifestResources.init = function(config) {
 		ManifestResources.rootPath = "";
 	}
 	lime_utils_Assets.defaultRootPath = ManifestResources.rootPath;
-	var data = "{\"name\":\"swf-library\",\"assets\":\"aoy4:pathy35:lib%2Fswf-library%2Fswf-library.biny4:sizei20874y4:typey4:TEXTy2:idR1y7:preloadtgh\",\"rootPath\":null,\"version\":2,\"libraryArgs\":[\"lib/swf-library/swf-library.bin\"],\"libraryType\":\"openfl._internal.formats.swf.SWFLiteLibrary\"}";
+	var data = "{\"name\":\"swf-library\",\"assets\":\"aoy4:pathy26:lib%2Fswf-library%2F20.pngy4:sizei1825428y4:typey5:IMAGEy2:idR1y7:preloadtgoR0y26:lib%2Fswf-library%2F23.pngR2i32995R3R4R5R7R6tgoR0y26:lib%2Fswf-library%2F26.pngR2i9794R3R4R5R8R6tgoR0y26:lib%2Fswf-library%2F28.pngR2i11022R3R4R5R9R6tgoR0y26:lib%2Fswf-library%2F30.pngR2i35155R3R4R5R10R6tgoR0y35:lib%2Fswf-library%2Fswf-library.binR2i57647R3y4:TEXTR5R11R6tgh\",\"rootPath\":null,\"version\":2,\"libraryArgs\":[\"lib/swf-library/swf-library.bin\"],\"libraryType\":\"openfl._internal.formats.swf.SWFLiteLibrary\"}";
 	var manifest = lime_utils_AssetManifest.parse(data,ManifestResources.rootPath);
 	var library = lime_utils_AssetLibrary.fromManifest(manifest);
 	lime_utils_Assets.registerLibrary("swf-library",library);
@@ -6397,6 +6466,70 @@ haxe_io_Path.prototype = {
 	,ext: null
 	,backslash: null
 	,__class__: haxe_io_Path
+};
+var interaction_KeyboardInteraction = function() {
+	this.upDown = false;
+	this.downDown = false;
+	this.rightDown = false;
+	this.leftDown = false;
+	var current = openfl_Lib.get_current();
+	var stage = current.stage;
+	stage.addEventListener("keyDown",$bind(this,this.keyDown));
+	stage.addEventListener("keyDown",$bind(this,this.keyUp));
+};
+$hxClasses["interaction.KeyboardInteraction"] = interaction_KeyboardInteraction;
+interaction_KeyboardInteraction.__name__ = "interaction.KeyboardInteraction";
+interaction_KeyboardInteraction.prototype = {
+	leftDown: null
+	,rightDown: null
+	,downDown: null
+	,upDown: null
+	,update: null
+	,keyDown: function(event) {
+		var keyCode = event.keyCode;
+		var tmp = keyCode == 27;
+		switch(keyCode) {
+		case 37:
+			this.leftDown = true;
+			break;
+		case 38:
+			this.upDown = true;
+			break;
+		case 39:
+			this.rightDown = true;
+			break;
+		case 40:
+			this.downDown = true;
+			break;
+		default:
+		}
+		this.update();
+	}
+	,keyUp: function(event) {
+		var keyCode = event.keyCode;
+		switch(keyCode) {
+		case 37:
+			this.leftDown = false;
+			break;
+		case 38:
+			this.upDown = false;
+			break;
+		case 39:
+			this.rightDown = false;
+			break;
+		case 40:
+			this.downDown = false;
+			break;
+		default:
+		}
+	}
+	,resetArrows: function() {
+		this.leftDown = false;
+		this.rightDown = false;
+		this.downDown = false;
+		this.upDown = false;
+	}
+	,__class__: interaction_KeyboardInteraction
 };
 var js__$Boot_HaxeError = function(val) {
 	Error.call(this);
@@ -25025,7 +25158,7 @@ var lime_utils_AssetCache = function() {
 	this.audio = new haxe_ds_StringMap();
 	this.font = new haxe_ds_StringMap();
 	this.image = new haxe_ds_StringMap();
-	this.version = 877894;
+	this.version = 136376;
 };
 $hxClasses["lime.utils.AssetCache"] = lime_utils_AssetCache;
 lime_utils_AssetCache.__name__ = "lime.utils.AssetCache";
@@ -73988,45 +74121,163 @@ video_SimpleVideoPlayer.prototype = {
 	,__class__: video_SimpleVideoPlayer
 	,__properties__: {get_paused:"get_paused",get_playing:"get_playing",get_time:"get_time",get_container:"get_container",set_height:"set_height",get_height:"get_height",set_width:"set_width",get_width:"get_width",set_soundTransform:"set_soundTransform",get_soundTransform:"get_soundTransform",set_mute:"set_mute",get_mute:"get_mute",set_pan:"set_pan",get_pan:"get_pan",set_volume:"set_volume",get_volume:"get_volume",set_loop:"set_loop",get_loop:"get_loop",set_source:"set_source",get_source:"get_source"}
 };
+var visual_Background = function(scope) {
+	this.holder = new openfl_display_Sprite();
+	this.currentScope = scope;
+	scope.addChild(this.holder);
+	this.clip = openfl_utils_Assets.getMovieClip("swf-library:" + "background");
+	this.clip.set_x(0.);
+	this.clip.set_y(0.);
+	this.holder.addChild(this.clip);
+};
+$hxClasses["visual.Background"] = visual_Background;
+visual_Background.__name__ = "visual.Background";
+visual_Background.prototype = {
+	holder: null
+	,clip: null
+	,currentScope: null
+	,move: function(x,y) {
+		var _g = this.holder;
+		_g.set_x(_g.get_x() + x);
+		var _g1 = this.holder;
+		_g1.set_y(_g1.get_y() + y);
+	}
+	,position: function(x,y) {
+		this.holder.set_x(x);
+		this.holder.set_y(y);
+	}
+	,__class__: visual_Background
+};
+var visual_BaseMonster = function(scope,name) {
+	this.holder = new openfl_display_Sprite();
+	this.currentScope = scope;
+	scope.addChild(this.holder);
+	this.clip = openfl_utils_Assets.getMovieClip("swf-library:" + name);
+	this.clip.set_x(0.);
+	this.clip.set_y(0.);
+	this.holder.addChild(this.clip);
+};
+$hxClasses["visual.BaseMonster"] = visual_BaseMonster;
+visual_BaseMonster.__name__ = "visual.BaseMonster";
+visual_BaseMonster.prototype = {
+	holder: null
+	,clip: null
+	,currentScope: null
+	,move: function(x,y) {
+		if(x < 0) {
+			this.holder.set_scaleX(1);
+		} else if(x > 0) {
+			this.holder.set_scaleX(-1);
+		}
+		var _g = this.holder;
+		_g.set_x(_g.get_x() + x);
+		var _g1 = this.holder;
+		_g1.set_y(_g1.get_y() + y);
+	}
+	,position: function(x,y) {
+		this.holder.set_x(x);
+		this.holder.set_y(y);
+	}
+	,changeScope: function(scope) {
+		this.currentScope.removeChild(this.holder);
+		this.currentScope = scope;
+		scope.addChild(this.holder);
+	}
+	,__class__: visual_BaseMonster
+};
+var visual_Bat = function(scope) {
+	visual_BaseMonster.call(this,scope,"bat");
+	this.holder.set_x(300);
+	this.holder.set_y(600 - this.holder.get_height());
+};
+$hxClasses["visual.Bat"] = visual_Bat;
+visual_Bat.__name__ = "visual.Bat";
+visual_Bat.__super__ = visual_BaseMonster;
+visual_Bat.prototype = $extend(visual_BaseMonster.prototype,{
+	move: function(x,y) {
+		visual_BaseMonster.prototype.move.call(this,x,y);
+		if(y < 0) {
+			this.holder.set_rotation(-90);
+		} else {
+			this.holder.set_rotation(0);
+		}
+	}
+	,__class__: visual_Bat
+});
 var visual_Dragon = function(scope) {
+	this.state = 0;
 	this.speed = 2.;
 	this.forward = true;
-	this.turnRoundX = 700.;
-	this.clip = openfl_utils_Assets.getMovieClip("swf-library:dragon");
-	this.clip.set_x(100.);
-	this.clip.set_y(100.);
-	scope.addChild(this.clip);
+	this.minX = 0;
+	this.maxX = 700.;
+	this.holder = new openfl_display_Sprite();
+	scope.addChild(this.holder);
+	this.clip = openfl_utils_Assets.getMovieClip("swf-library:dragon2Hold");
+	this.clip.set_scaleX(-1);
+	this.clip.set_x(0.);
+	this.clip.set_y(220.);
+	this.holder.addChild(this.clip);
 };
 $hxClasses["visual.Dragon"] = visual_Dragon;
 visual_Dragon.__name__ = "visual.Dragon";
 visual_Dragon.prototype = {
-	turnRoundX: null
+	holder: null
+	,maxX: null
+	,minX: null
 	,forward: null
 	,speed: null
 	,clip: null
+	,state: null
 	,update: function() {
 		this.backforward();
 	}
 	,backforward: function() {
 		if(this.forward) {
-			var _g = this.clip;
+			var _g = this.holder;
 			_g.set_x(_g.get_x() + this.speed);
 		} else {
-			var _g1 = this.clip;
+			var _g1 = this.holder;
 			_g1.set_x(_g1.get_x() - this.speed);
 		}
-		var _g2 = this.clip;
+		var _g2 = this.holder;
 		_g2.set_y(_g2.get_y() + 3 * (Math.random() - 0.5));
-		if(this.clip.get_x() > this.turnRoundX && this.forward) {
-			this.clip.set_scaleX(-1.);
+		if(this.holder.get_x() > this.maxX && this.forward) {
+			this.holder.set_scaleX(-1.);
 			this.forward = false;
 		}
-		if(this.clip.get_x() < 0. && !this.forward) {
-			this.clip.set_scaleX(1.);
+		if(this.holder.get_x() < this.minX && !this.forward) {
+			this.holder.set_scaleX(1.);
 			this.forward = true;
 		}
 	}
 	,__class__: visual_Dragon
+};
+var visual_Foreground = function(scope) {
+	this.holder = new openfl_display_Sprite();
+	this.currentScope = scope;
+	scope.addChild(this.holder);
+	this.clip = openfl_utils_Assets.getMovieClip("swf-library:" + "foreground");
+	this.clip.set_x(0.);
+	this.clip.set_y(0.);
+	this.holder.addChild(this.clip);
+};
+$hxClasses["visual.Foreground"] = visual_Foreground;
+visual_Foreground.__name__ = "visual.Foreground";
+visual_Foreground.prototype = {
+	holder: null
+	,clip: null
+	,currentScope: null
+	,move: function(x,y) {
+		var _g = this.holder;
+		_g.set_x(_g.get_x() + x);
+		var _g1 = this.holder;
+		_g1.set_y(_g1.get_y() + y);
+	}
+	,position: function(x,y) {
+		this.holder.set_x(x);
+		this.holder.set_y(y);
+	}
+	,__class__: visual_Foreground
 };
 var visual_TestButton = function(scope,x,y,c) {
 	this.draw(scope,x,y,c);
@@ -74052,6 +74303,17 @@ visual_TestButton.prototype = {
 	}
 	,__class__: visual_TestButton
 };
+var visual_Tiny = function(scope) {
+	visual_BaseMonster.call(this,scope,"tiny");
+	this.holder.set_x(300);
+	this.holder.set_y(600 - this.holder.get_height() - 20);
+};
+$hxClasses["visual.Tiny"] = visual_Tiny;
+visual_Tiny.__name__ = "visual.Tiny";
+visual_Tiny.__super__ = visual_BaseMonster;
+visual_Tiny.prototype = $extend(visual_BaseMonster.prototype,{
+	__class__: visual_Tiny
+});
 function $getIterator(o) { if( o instanceof Array ) return HxOverrides.iter(o); else return o.iterator(); }
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
 if(typeof $global.$haxeUID == "undefined") $global.$haxeUID = 0;

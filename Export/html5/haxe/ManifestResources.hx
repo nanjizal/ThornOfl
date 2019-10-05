@@ -68,7 +68,7 @@ import sys.FileSystem;
 
 		#else
 
-		data = '{"name":"swf-library","assets":"aoy4:pathy35:lib%2Fswf-library%2Fswf-library.biny4:sizei20874y4:typey4:TEXTy2:idR1y7:preloadtgh","rootPath":null,"version":2,"libraryArgs":["lib/swf-library/swf-library.bin"],"libraryType":"openfl._internal.formats.swf.SWFLiteLibrary"}';
+		data = '{"name":"swf-library","assets":"aoy4:pathy26:lib%2Fswf-library%2F20.pngy4:sizei1825428y4:typey5:IMAGEy2:idR1y7:preloadtgoR0y26:lib%2Fswf-library%2F23.pngR2i32995R3R4R5R7R6tgoR0y26:lib%2Fswf-library%2F26.pngR2i9794R3R4R5R8R6tgoR0y26:lib%2Fswf-library%2F28.pngR2i11022R3R4R5R9R6tgoR0y26:lib%2Fswf-library%2F30.pngR2i35155R3R4R5R10R6tgoR0y35:lib%2Fswf-library%2Fswf-library.binR2i57647R3y4:TEXTR5R11R6tgh","rootPath":null,"version":2,"libraryArgs":["lib/swf-library/swf-library.bin"],"libraryType":"openfl._internal.formats.swf.SWFLiteLibrary"}';
 		manifest = AssetManifest.parse (data, rootPath);
 		library = AssetLibrary.fromManifest (manifest);
 		Assets.registerLibrary ("swf-library", library);
@@ -103,6 +103,11 @@ null
 #if !display
 #if flash
 
+@:keep @:bind @:noCompletion #if display private #end class __ASSET__lib_swf_library_20_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
+@:keep @:bind @:noCompletion #if display private #end class __ASSET__lib_swf_library_23_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
+@:keep @:bind @:noCompletion #if display private #end class __ASSET__lib_swf_library_26_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
+@:keep @:bind @:noCompletion #if display private #end class __ASSET__lib_swf_library_28_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
+@:keep @:bind @:noCompletion #if display private #end class __ASSET__lib_swf_library_30_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind @:noCompletion #if display private #end class __ASSET__lib_swf_library_swf_library_bin extends null { }
 @:keep @:bind @:noCompletion #if display private #end class __ASSET__lib_swf_library_json extends null { }
 @:keep @:bind @:noCompletion #if display private #end class __ASSET__manifest_default_json extends null { }
@@ -110,6 +115,11 @@ null
 
 #elseif (desktop || cpp)
 
+@:keep @:image("/projects/May2019/October2019/ThornOfl/Export/html5/obj/libraries/swf-library/20.png") @:noCompletion #if display private #end class __ASSET__lib_swf_library_20_png extends lime.graphics.Image {}
+@:keep @:image("/projects/May2019/October2019/ThornOfl/Export/html5/obj/libraries/swf-library/23.png") @:noCompletion #if display private #end class __ASSET__lib_swf_library_23_png extends lime.graphics.Image {}
+@:keep @:image("/projects/May2019/October2019/ThornOfl/Export/html5/obj/libraries/swf-library/26.png") @:noCompletion #if display private #end class __ASSET__lib_swf_library_26_png extends lime.graphics.Image {}
+@:keep @:image("/projects/May2019/October2019/ThornOfl/Export/html5/obj/libraries/swf-library/28.png") @:noCompletion #if display private #end class __ASSET__lib_swf_library_28_png extends lime.graphics.Image {}
+@:keep @:image("/projects/May2019/October2019/ThornOfl/Export/html5/obj/libraries/swf-library/30.png") @:noCompletion #if display private #end class __ASSET__lib_swf_library_30_png extends lime.graphics.Image {}
 @:keep @:file("/projects/May2019/October2019/ThornOfl/Export/html5/obj/libraries/swf-library/swf-library.bin") @:noCompletion #if display private #end class __ASSET__lib_swf_library_swf_library_bin extends haxe.io.Bytes {}
 @:keep @:file("") @:noCompletion #if display private #end class __ASSET__lib_swf_library_json extends haxe.io.Bytes {}
 @:keep @:file("") @:noCompletion #if display private #end class __ASSET__manifest_default_json extends haxe.io.Bytes {}
